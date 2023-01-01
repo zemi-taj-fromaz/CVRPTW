@@ -1,4 +1,4 @@
-//CTRL+SHIFT+P for user snippets
+///CTRL+SHIFT+P for user snippets
 #include <iostream>
 #include <string>
 #include <vector>
@@ -32,7 +32,7 @@ vector<string> split(string str, string token){
 
 int main(int argc, char *argv[]){
 
-    DataLoader* dataLoader = new DataLoader("problem_instance.csv");
+    DataLoader* dataLoader = new DataLoader("i1[2].TXT");
 
     vector<string> vs(dataLoader->__load__());
 
@@ -42,13 +42,13 @@ int main(int argc, char *argv[]){
     int capacity = stoi(instace_characteristics[1]);
 
     auto depot_init = split(vs[1],",");
-    Customer* depot = new Customer({stoi(depot_init[1]),stoi(depot_init[2])},stoi(depot_init[3]),stoi(depot_init[4]),stoi(depot_init[5]),stoi(depot_init[6]));
+    Customer* depot = new Customer(stoi(depot_init[0]),{stoi(depot_init[1]),stoi(depot_init[2])},stoi(depot_init[3]),stoi(depot_init[4]),stoi(depot_init[5]),stoi(depot_init[6]));
 
     vector<Customer*> customers;
     Customer* customer = nullptr;
     for(int i = 2; i < vs.size(); i++){
         auto customer_init = split(vs[i],",");
-        customer = new Customer({stoi(customer_init[1]),stoi(customer_init[2])},stoi(customer_init[3]),stoi(customer_init[4]),stoi(customer_init[5]),stoi(customer_init[6]));
+        customer = new Customer(stoi(customer_init[0]),{stoi(customer_init[1]),stoi(customer_init[2])},stoi(customer_init[3]),stoi(customer_init[4]),stoi(customer_init[5]),stoi(customer_init[6]));
         customers.push_back(customer);
     }
 

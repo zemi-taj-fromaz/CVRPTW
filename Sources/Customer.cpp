@@ -1,6 +1,8 @@
 #include "../Headers/Customer.h"
+#include <math.h>
 
-Customer::Customer(pair<int,int> coord,int demand,int ready_time,int due_date,int service_time){
+Customer::Customer(int id,pair<int,int> coord,int demand,int ready_time,int due_date,int service_time){
+    this->id = id;
     this->coord = coord;
     this->demand = demand;
     this->ready_time = ready_time;
@@ -25,3 +27,6 @@ int Customer::getServiceTime(){
     return this->service_time;
 }
 
+double Customer::distance(Customer other){
+    return sqrt(pow((coord.first - other.getCoord().first), 2) + pow(coord.second - other.getCoord().second, 2));
+}
