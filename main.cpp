@@ -7,8 +7,12 @@
 
 #include "Sources/DataLoader.cpp"
 #include "Sources/Customer.cpp"
+#include "Sources/Solution.cpp"
 
 using namespace std;
+
+#define iterator vector<int>::iterator
+#define ll long long
 
 vector<string> split(string str, string token){
     vector<string> result;
@@ -26,9 +30,22 @@ vector<string> split(string str, string token){
     return result;
 }
 
+#pragma region Greedy
 
-#define iterator vector<int>::iterator
-#define ll long long
+bool CompareByReadyTime(Customer* a, Customer* b){
+    return a->getReadyTime() < b->getReadyTime();
+}
+
+Solution Greedy(vector<Customer*>& customers){
+    sort(customers.begin(), customers.end(), CompareByReadyTime);
+    Solution solution = Solution();
+    //TODO write a solution that goes through orders by getReadyTimes
+    //It is also possible to find a solution taking the elements by FinishedTime
+        //where FinishedTime is defined as getReadyTime() + ServiceTime()
+    return solution;
+}
+
+#pragma endregion
 
 int main(int argc, char *argv[]){
 
