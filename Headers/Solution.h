@@ -1,6 +1,8 @@
 #ifndef SOLUTION_H
 #define SOLUTION_H
 
+#include "Route.h"
+
 #include <iostream>
 #include <vector>
 #include "Route.h"

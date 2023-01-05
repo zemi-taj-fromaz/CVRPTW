@@ -1,18 +1,18 @@
 #ifndef ROUTE_H
 #define ROUTE_H
 
+#include "Customer.h"
+
 #include <iostream>
 #include <vector>
-#include "Customer.h"
 
 using namespace std;
 
 class Route {
     private:
-        vector<Customer> order;
     public:
-        Route(vector<Customer>);
-        vector<Customer> getOrder();
+        vector<pair<Customer, int> > order;
+        Route();
         double length();
 };
 

@@ -1,6 +1,8 @@
 #include "../Headers/DataLoader.h"
+
+#include <iostream>
 #include <fstream>
-#include <filesystem>
+#include <string>
 
 DataLoader::DataLoader(string filename){
     this->filename = filename;
@@ -9,10 +11,9 @@ DataLoader::DataLoader(string filename){
 vector<string> DataLoader::__load__(){
     vector<string> vs;
 
-    
-    filesystem::path cwd = filesystem::current_path() / ("instances/" + this->filename);
+    string datapath = "instances/" + this->filename;
 
-    ifstream file(cwd.string());
+    std::ifstream file("a");
     if(file){
         string input;
 

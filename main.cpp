@@ -9,6 +9,7 @@
 #include "Sources/Customer.cpp"
 #include "Sources/Solution.cpp"
 #include "Sources/GiftWrapper.cpp"
+#include "Sources/Greedy.cpp"
 
 using namespace std;
 
@@ -32,23 +33,6 @@ vector<string> split(string str, string token){
     }
     return result;
 }
-#pragma endregion
-
-#pragma region Greedy
-
-bool CompareByReadyTime(Customer* a, Customer* b){
-    return a->getReadyTime() < b->getReadyTime();
-}
-
-Solution Greedy(vector<Customer*>& customers){
-    sort(customers.begin(), customers.end(), CompareByReadyTime);
-    Solution solution = Solution();
-    //TODO write a solution that goes through orders by getReadyTimes
-    //It is also possible to find a solution taking the elements by FinishedTime
-        //where FinishedTime is defined as getReadyTime() + ServiceTime()
-    return solution;
-}
-
 #pragma endregion
 
 int main(int argc, char *argv[]){
@@ -76,6 +60,7 @@ int main(int argc, char *argv[]){
         total_demand += customer->getDemand();
         customers.push_back(*customer);
     }
+    Greedy(customers, depot).print();
 
     GiftWrapper* giftWrapper = new GiftWrapper();
 

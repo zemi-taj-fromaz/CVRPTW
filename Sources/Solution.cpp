@@ -26,14 +26,9 @@ void Solution::print(){
     for (int i = 0; i < routes.size(); i++){
         printf("%d: ", i + 1);
         
-        vector<Customer> order = routes[i].getOrder();
-        int service_time = 0;
+        vector<pair<Customer, int> > order = routes[i].order;
         for (int j = 0; j < order.size(); j++){
-            if(j != 0){
-                service_time = service_time + order[j - 1].getServiceTime() + (int) ceil(order[j].distance(order[j - 1]));
-                service_time = max(service_time, order[j].getReadyTime());
-            }
-            printf("%d(%d)", order[j].getId(), service_time);
+            printf("%d(%d)", order[j].first.getId(), order[i].second);
             if(j != order.size() - 1) printf("->");
             else printf("\n");
         }
