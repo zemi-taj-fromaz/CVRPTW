@@ -6,10 +6,9 @@
 #include <cmath>
 
 #include "Sources/DataLoader.cpp"
-#include "Headers/Customer.h"
-#include "Headers/Solution.h"
+#include "Sources/Customer.cpp"
+#include "Sources/Solution.cpp"
 #include "Sources/GiftWrapper.cpp"
-#include "Sources/Greedy.cpp"
 
 using namespace std;
 
@@ -41,6 +40,10 @@ int main(int argc, char *argv[]){
 
     vector<string> vs(dataLoader->__load__());
 
+    for(auto s : vs){
+        cout<<s<<" ";
+    }cout<<endl;
+
     auto instace_characteristics = split(vs[0],",");
     int vehicle_number = stoi(instace_characteristics[0]);
     int customer_number = vs.size() - 2;
@@ -60,7 +63,6 @@ int main(int argc, char *argv[]){
         total_demand += customer->getDemand();
         customers.push_back(*customer);
     }
-    Greedy(customers, depot).print();
 
     GiftWrapper* giftWrapper = new GiftWrapper();
 
@@ -108,16 +110,25 @@ int main(int argc, char *argv[]){
         min_routes--;
 
     }
+    vector<Route> seedRoutes;
+    for(auto seed : seeds){
+        Route r({depot,seed},capacity);
+        seedRoutes.push_back(r);
+    }
 
 
     #pragma endregion
 
     
     vector<Customer> L;
-    sort(customers.begin(),customers.end(),CompareById);
-    sort(customers.begin(),customers.end(),CompareById);
+    sort(customers.begin(),customers.end(),Solution::CompareById);
     set_difference(customers.begin(),customers.end(),convexHull.begin(),convexHull.end(),
                         inserter(L,L.begin()));
+    
+    Solution solution(seedRoutes,capacity);
+    solution.__greedy__(L,depot);
+
+    solution.print();
   
     return 0;
 }
