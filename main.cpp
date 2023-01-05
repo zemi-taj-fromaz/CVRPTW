@@ -6,8 +6,8 @@
 #include <cmath>
 
 #include "Sources/DataLoader.cpp"
-#include "Sources/Customer.cpp"
-#include "Sources/Solution.cpp"
+#include "Headers/Customer.h"
+#include "Headers/Solution.h"
 #include "Sources/GiftWrapper.cpp"
 #include "Sources/Greedy.cpp"
 
@@ -37,7 +37,7 @@ vector<string> split(string str, string token){
 
 int main(int argc, char *argv[]){
 
-    DataLoader* dataLoader = new DataLoader("i1[2].TXT");
+    DataLoader* dataLoader = new DataLoader("instance1.txt");
 
     vector<string> vs(dataLoader->__load__());
 
@@ -114,6 +114,8 @@ int main(int argc, char *argv[]){
 
     
     vector<Customer> L;
+    sort(customers.begin(),customers.end(),CompareById);
+    sort(customers.begin(),customers.end(),CompareById);
     set_difference(customers.begin(),customers.end(),convexHull.begin(),convexHull.end(),
                         inserter(L,L.begin()));
   

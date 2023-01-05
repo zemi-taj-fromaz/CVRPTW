@@ -10,6 +10,10 @@ Customer::Customer(int id,pair<int,int> coord,int demand,int ready_time,int due_
     this->service_time = service_time;
 }
 
+int Customer::getId(){
+    return this->id;
+}
+
 pair<int,int> Customer::getCoord(){
     return {this->coord.first,this->coord.second};
 }
@@ -33,4 +37,8 @@ double Customer::distance(Customer other){
 
 bool Customer::operator==(Customer& rhs){
     return this->id == rhs.getId();
+}
+
+bool Customer::operator<(Customer& rhs){
+    return this->id < rhs.getId();
 }

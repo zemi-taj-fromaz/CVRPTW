@@ -23,6 +23,7 @@ class Customer {
         int getServiceTime();
         double distance(Customer);
         bool operator==(Customer &rhs);
+        bool operator<(Customer &rhs);
 };
 
 #endif

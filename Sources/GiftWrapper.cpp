@@ -18,7 +18,7 @@ vector<Customer> GiftWrapper::wrap(vector<Customer> customers){
 
     int n = customers.size();
 
-    if (n < 3) return;
+    if (n < 3) return customers;
 
     vector<int> next(n,-1);
     int l = 0;

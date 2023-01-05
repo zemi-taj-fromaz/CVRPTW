@@ -1,12 +1,17 @@
-#include "../Headers/Route.h"
-#include "../Headers/Solution.h"
+#include "Route.cpp"
+#include "Customer.cpp"
+#include "Solution.cpp"
 
 #include <algorithm>
 #include <math.h>
 #include <vector>
 
-bool CompareByReadyTime(Customer* a, Customer* b){
-    return a->getReadyTime() < b->getReadyTime();
+bool CompareByReadyTime(Customer a, Customer b){
+    return a.getReadyTime() < b.getReadyTime();
+}
+
+bool CompareById(Customer a, Customer b){
+    return a.getId() < b.getId();
 }
 
 Solution Greedy(vector<Customer> customers, Customer depot){
