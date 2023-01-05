@@ -13,7 +13,7 @@ Solution::Solution(vector<Route> routes){
 
 double Solution::distance(){
     double distance = 0.0;
-    for(auto route : routes) distance += route.distance();
+    for(auto route : routes) distance += route.length();
     return distance;
 }
 

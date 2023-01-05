@@ -30,3 +30,7 @@ int Customer::getServiceTime(){
 double Customer::distance(Customer other){
     return sqrt(pow((coord.first - other.getCoord().first), 2) + pow(coord.second - other.getCoord().second, 2));
 }
+
+bool Customer::operator==(Customer& rhs){
+    return this->id == rhs.getId();
+}

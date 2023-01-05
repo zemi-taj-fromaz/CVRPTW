@@ -9,10 +9,10 @@ vector<Customer> Route::getOrder() {
     return order; 
 }
 
-double Route::distance() {
-    double distance = 0.0;
+double Route::length() {
+    double length = 0.0;
     for(int i = 0; i < order.size() - 2; i++){
-        distance += order[i].distance(order[i + 1]);
+        length += order[i].distance(order[i + 1]);
     }
-    return distance;
+    return length;
 }

@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <vector>
-#include <Customer.h>
+#include "Customer.h"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ class Route {
     public:
         Route(vector<Customer>);
         vector<Customer> getOrder();
-        double distance();
+        double length();
 };
 
 #endif

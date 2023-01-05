@@ -22,6 +22,7 @@ class Customer {
         int getDueDate();
         int getServiceTime();
         double distance(Customer);
+        bool operator==(Customer &rhs);
 };
 
 #endif
