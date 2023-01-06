@@ -1,5 +1,6 @@
 #include "../Headers/Solution.h"
 #include <math.h>
+#include <algorithm>
 
 using namespace std;
 
@@ -85,21 +86,29 @@ void Solution::__greedy__(vector<Customer> customers,Customer depot){
 }
 
 void Solution::print(){
+    cout << "Printing greedy solution\n";
     printf("%d\n", routes.size());
     for (int i = 0; i < routes.size(); i++){
 
         printf("%d: ", i + 1);
-        double time = 0;
+        double current_time = 0;
+
+        vector<pair<Customer, int> > order_with_time = routes[i].order_with_time;
+
+        for(int j = 0; j < order_with_time.size(); j++){
+            printf("%d(%d)", order_with_time[j].first.getId(), order_with_time[j].second);
+            if(j != order_with_time.size() - 1) printf("->");
+        }
 
         vector<Customer> order = routes[i].order;
         for (int j = 1; j < order.size(); j++){
-            time += order[j].distance(order[j-1]);
-            if(time < order[j].getReadyTime()) time = order[j].getReadyTime();
-            printf("%d(%d)", order[j].getId(), time);
-            time+=order[j].getServiceTime();
+            current_time += order[j].distance(order[j-1]);
+            if(current_time < order[j].getReadyTime()) current_time = order[j].getReadyTime();
+            printf("%d(%d)", order[j].getId(), current_time);
+            current_time+=order[j].getServiceTime();
             if(j != order.size() - 1) printf("->");
-            else printf("\n");
         }
+        cout << '\n';
     }
-    printf("%2lf\n", length());
+    printf("%.2lf\n", length());
 }

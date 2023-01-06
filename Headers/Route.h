@@ -14,6 +14,7 @@ class Route {
         int capacity;
     public:
         vector<Customer> order;
+        vector<pair<Customer, int> > order_with_time;
         Route(int);
         Route(vector<Customer>,int);
         double length();

@@ -12,8 +12,8 @@ Route::Route(vector<Customer> order, int capacity){
 
 double Route::length() {
     double length = 0.0;
-    for(int i = 0; i < order.size() - 2; i++){
-        length += order[i].distance(order[i + 1]);
+    for(int i = 0; i < order_with_time.size() - 2; i++){
+        length += order_with_time[i].first.distance(order_with_time[i + 1].first);
     }
     return length;
 }
@@ -38,14 +38,16 @@ pair<double,int> Route::distanceFromRoute(Customer customer){
 bool Route::checkConstraints(vector<Customer> route){
 
     double time = 0;
+    double order_size;
     for(int i = 1; i < route.size(); i++){
         time += route[i].distance(route[i-1]);
         if(route[i].getReadyTime() > time) time = route[i].getReadyTime();
         if(route[i].getDueDate() < time) return false;
         time += route[i].getServiceTime();
+        order_size += route[i].getDemand();
     }
 
-    return true;
+    return order_size <= capacity;
     
 }
 
