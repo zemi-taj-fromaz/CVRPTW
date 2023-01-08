@@ -1,6 +1,8 @@
 #include "../Headers/Solution.h"
 #include <math.h>
 #include <algorithm>
+#include <fstream>
+#include <filesystem>
 
 
 using namespace std;
@@ -36,83 +38,42 @@ void Solution::addRoute(Route route){
 }
 
 
-
-// void Solution::__greedy__(vector<Customer> customers,Customer depot){
-//     sort(customers.begin(), customers.end(), CompareByReadyTime);
-
-//     for(int i = 0; i < customers.size(); i++){
-
-//         //calculate the most optimal route to add to
-//         //{ {distance_from_route, insertion_point} , route_index}
-//         vector< pair< pair<double,int>, int> > optimal_routes; 
-//         for(int j = 0; j < routes.size(); j++){
-
-//             optimal_routes.push_back({routes[j].distanceFromRoute(customers[i]), j});
-
-//         }
-//         sort(optimal_routes.begin(), optimal_routes.end());
-//         bool addedToRoute = false;
-//         for(auto optimal_route : optimal_routes){
-//             int insertion_point = optimal_route.first.second;
-//             int route_index = optimal_route.second;
-//             bool addedToRoute = routes[route_index].addToRoute(customers[i] , insertion_point);
-//             if(addedToRoute) break;
-//         }
-
-//         if(addedToRoute == false){
-//             Route newRoute({depot,customers[i]}, capacity);
-//             routes.push_back(newRoute);
-//         }
-
- //   }
-
-//     while(!customers.empty()){
-        
-
-//         bool added = false;
-        
-//         for(int i = 0; i < customers.size(); i++){
-//             int visit_time = last.second + last.first.getServiceTime() + (int) ceil(last.first.distance(customers[i]));
-//             if(visit_time <= customers[i].getDueDate()){
-//                 route.order.push_back({customers[i], max(visit_time, customers[i].getReadyTime())});
-//                 customers.erase(customers.begin() + i);
-//                 added = true;
-//                 break;
-//             }
-//         }
-//         if(added) continue;
-//         solution.addRoute(route);
-//         route = Route();
-//     }
-// }
-//}
-
-void Solution::print(){
+void Solution::print(string filename){
     cout << "Printing greedy solution\n";
+    string outfile = "out/res-un-" + filename;
     printf("%d\n", routes.size());
+    filesystem::path cwd = filesystem::current_path() / outfile;
+    ofstream file(cwd.string());
+    string output;
+    output = to_string(routes.size()) + "\n";
+    file<<output;
+    
     for (int i = 0; i < routes.size(); i++){
 
         printf("%d: ", i + 1);
+        output = to_string(i+1) + ": "; 
         double current_time = 0;
 
         vector<pair<Customer, int> > order_with_time = routes[i].order_with_time;
-
+        
         for(int j = 0; j < order_with_time.size(); j++){
             printf("%d(%d)", order_with_time[j].first.getId(), order_with_time[j].second);
-            if(j != order_with_time.size() - 1) printf("->");
+            output += to_string(order_with_time[j].first.getId()) +"(" + to_string(order_with_time[j].second) + ")";
+            if(j != order_with_time.size() - 1){
+                printf("->");
+                output+="->";
+            }
         }
 
-        vector<Customer> order = routes[i].order;
-        for (int j = 1; j < order.size(); j++){
-            current_time += order[j].distance(order[j-1]);
-            if(current_time < order[j].getReadyTime()) current_time = order[j].getReadyTime();
-            printf("%d(%d)", order[j].getId(), current_time);
-            current_time+=order[j].getServiceTime();
-            if(j != order.size() - 1) printf("->");
-        }
         cout << '\n';
+        output += "\n";
+        file << output;
     }
+    char buffer[100];
+    sprintf(buffer,"%.2lf\n", length());
     printf("%.2lf\n", length());
+    file<<buffer;
+    file.close();
 
 
 }

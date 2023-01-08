@@ -5,6 +5,7 @@
 
 #include <iostream>
 #include <vector>
+#include <string>
 #include "Route.h"
 
 using namespace std;
@@ -16,7 +17,7 @@ class Solution {
     public:
         Solution(int);
         Solution(vector<Route>,int);
-        void print();
+        void print(string filename);
         double length();
         void addRoute(Route);
         void __greedy__(vector<Customer>,Customer);

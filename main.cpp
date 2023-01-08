@@ -4,13 +4,11 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-#include <fstream>
-#include <filesystem>
+
 
 #include "Sources/DataLoader.cpp"
 #include "Sources/Customer.cpp"
 #include "Sources/Solution.cpp"
-#include "Sources/GiftWrapper.cpp"
 
 using namespace std;
 
@@ -55,7 +53,6 @@ bool CompareByReadyTime(Customer a, Customer b){
     int route_demand_size = 0;
 
     while(!customers.empty()){
-        cout << customers.size();
         if(route.order_with_time.empty()) route.order_with_time.push_back({depot, 0});
        
         pair<Customer, int> last = route.order_with_time[route.order_with_time.size() - 1];
@@ -64,16 +61,19 @@ bool CompareByReadyTime(Customer a, Customer b){
         for(int i = 0; i < customers.size(); i++){
             int visit_time = last.second + last.first.getServiceTime() + (int) ceil(last.first.distance(customers[i]));
             visit_time = max(visit_time,customers[i].getReadyTime());
-            if(visit_time <= customers[i].getDueDate() && route_demand_size + customers[i].getDemand() <= capacity
-                    && visit_time + customers[i].getServiceTime() + depot.distance(customers[i]) <= depot.getDueDate()){
+            if((visit_time <= customers[i].getDueDate()) && (route_demand_size + customers[i].getDemand() <= capacity)
+                    && (visit_time + customers[i].getServiceTime() + depot.distance(customers[i]) <= depot.getDueDate())){
                 route.order_with_time.push_back({customers[i], visit_time});
-                customers.erase(customers.begin() + i);
+                
                 added = true;
                 route_demand_size += customers[i].getDemand();
+                customers.erase(customers.begin() + i);
+                cout<<route_demand_size<<endl;
                 break;
             }
         }
         if(added) continue;
+        route.order_with_time.push_back({depot,last.second + last.first.getServiceTime() + (int) ceil(last.first.distance(depot))});
         solution.addRoute(route);
         route = Route(capacity);
         route_demand_size = 0;
@@ -85,18 +85,18 @@ bool CompareByReadyTime(Customer a, Customer b){
 
 int main(int argc, char *argv[]){
 
-    DataLoader* dataLoader = new DataLoader("instance1.csv");
+    string filename = argv[1];
+    DataLoader* dataLoader = new DataLoader(filename);
 
     vector<string> vs(dataLoader->__load__());
 
-    //for(auto s : vs){ cout<<s<<" "; }cout<<endl;
 
     auto instace_characteristics = split(vs[0],",");
     int vehicle_number = stoi(instace_characteristics[0]);
     int customer_number = vs.size() - 2;
     int capacity = stoi(instace_characteristics[1]);
+    printf("Capacity : %d\n",capacity);
 
-    cout << capacity << endl;
 
     auto depot_init = split(vs[1],",");
     Customer depot(stoi(depot_init[0]),{stoi(depot_init[1]),stoi(depot_init[2])},stoi(depot_init[3]),stoi(depot_init[4]),stoi(depot_init[5]),stoi(depot_init[6]));
@@ -113,21 +113,9 @@ int main(int argc, char *argv[]){
         customers.push_back(*customer);
     }
 
-    filesystem::path cwd = filesystem::current_path() / "coordinates.txt";
-    ofstream file(cwd.string());
-    if(file){
-        string output;
-        output = to_string(depot.getCoord().first) + " " + to_string(depot.getCoord().second) + "\n";
-        file << output;
-        for(int i = 0; i < customers.size(); i++){
-            auto coord = customers[i].getCoord();
-            output = to_string(coord.first) + " " + to_string(coord.second) + "\n";
-            file<<output;
-        }
-    }
-    file.close();
+    
 
-    Greedy(customers, depot, capacity).print();
+    Greedy(customers, depot, capacity).print(filename);
 
     return 0;
 }
