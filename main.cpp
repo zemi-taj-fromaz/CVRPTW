@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <fstream>
+#include <filesystem>
 
 #include "Sources/DataLoader.cpp"
 #include "Sources/Customer.cpp"
@@ -61,8 +63,10 @@ bool CompareByReadyTime(Customer a, Customer b){
        
         for(int i = 0; i < customers.size(); i++){
             int visit_time = last.second + last.first.getServiceTime() + (int) ceil(last.first.distance(customers[i]));
-            if(visit_time <= customers[i].getDueDate() && route_demand_size + customers[i].getDemand() <= capacity){
-                route.order_with_time.push_back({customers[i], max(visit_time, customers[i].getReadyTime())});
+            visit_time = max(visit_time,customers[i].getReadyTime());
+            if(visit_time <= customers[i].getDueDate() && route_demand_size + customers[i].getDemand() <= capacity
+                    && visit_time + customers[i].getServiceTime() + depot.distance(customers[i]) <= depot.getDueDate()){
+                route.order_with_time.push_back({customers[i], visit_time});
                 customers.erase(customers.begin() + i);
                 added = true;
                 route_demand_size += customers[i].getDemand();
@@ -109,75 +113,21 @@ int main(int argc, char *argv[]){
         customers.push_back(*customer);
     }
 
+    filesystem::path cwd = filesystem::current_path() / "coordinates.txt";
+    ofstream file(cwd.string());
+    if(file){
+        string output;
+        output = to_string(depot.getCoord().first) + " " + to_string(depot.getCoord().second) + "\n";
+        file << output;
+        for(int i = 0; i < customers.size(); i++){
+            auto coord = customers[i].getCoord();
+            output = to_string(coord.first) + " " + to_string(coord.second) + "\n";
+            file<<output;
+        }
+    }
+    file.close();
+
     Greedy(customers, depot, capacity).print();
 
-    return 0;
-
-    GiftWrapper* giftWrapper = new GiftWrapper();
-
-    vector<Customer> convexHull = giftWrapper->wrap(customers);
-
-    #pragma region SelectSeedPoints
-        
-    double distanceFromDepot = 0;
-
-    vector<bool> selected(convexHull.size(),false);
-
-    double max_distance = 0;
-    double max_distance_ind = 0;
-    for(int i = 0; i < convexHull.size(); i++){
-        distanceFromDepot = convexHull[i].distance(depot);
-        if(distanceFromDepot > max_distance){
-            max_distance = distanceFromDepot;
-            max_distance_ind = i;
-        }
-    }
-    
-    selected[max_distance_ind] = true;
-    vector<Customer> seeds;
-    seeds.push_back(convexHull[max_distance_ind]);
-    
-    int min_routes = (int)( ceil(total_demand/(double)capacity));
-    min_routes--;
-
-    while(min_routes){
-        
-        double distanceFromSeeds = 0;
-        max_distance = 0;
-        max_distance_ind = 0;
-        for(int i = 0; i < convexHull.size(); i++){
-            if(selected[i]) continue;
-            for(auto seed : seeds){
-                distanceFromSeeds += seed.distance(convexHull[i]);
-            }
-            if(distanceFromSeeds > max_distance){
-                max_distance = distanceFromSeeds;
-                max_distance_ind = i;
-            }
-        }
-        seeds.push_back(convexHull[max_distance_ind]);
-        min_routes--;
-
-    }
-    vector<Route> seedRoutes;
-    for(auto seed : seeds){
-        Route r({depot,seed},capacity);
-        seedRoutes.push_back(r);
-    }
-
-
-    #pragma endregion
-
-    
-    vector<Customer> L;
-    sort(customers.begin(),customers.end(),Solution::CompareById);
-    set_difference(customers.begin(),customers.end(),convexHull.begin(),convexHull.end(),
-                        inserter(L,L.begin()));
-    
-    Solution solution(seedRoutes,capacity);
-    solution.__greedy__(L,depot);
-
-    solution.print();
-  
     return 0;
 }

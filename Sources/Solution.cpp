@@ -2,7 +2,9 @@
 #include <math.h>
 #include <algorithm>
 
+
 using namespace std;
+
 
 Solution::Solution(int capacity){
     this->routes.clear();
@@ -35,34 +37,34 @@ void Solution::addRoute(Route route){
 
 
 
-void Solution::__greedy__(vector<Customer> customers,Customer depot){
-    sort(customers.begin(), customers.end(), CompareByReadyTime);
+// void Solution::__greedy__(vector<Customer> customers,Customer depot){
+//     sort(customers.begin(), customers.end(), CompareByReadyTime);
 
-    for(int i = 0; i < customers.size(); i++){
+//     for(int i = 0; i < customers.size(); i++){
 
-        //calculate the most optimal route to add to
-        //{ {distance_from_route, insertion_point} , route_index}
-        vector< pair< pair<double,int>, int> > optimal_routes; 
-        for(int j = 0; j < routes.size(); j++){
+//         //calculate the most optimal route to add to
+//         //{ {distance_from_route, insertion_point} , route_index}
+//         vector< pair< pair<double,int>, int> > optimal_routes; 
+//         for(int j = 0; j < routes.size(); j++){
 
-            optimal_routes.push_back({routes[j].distanceFromRoute(customers[i]), j});
+//             optimal_routes.push_back({routes[j].distanceFromRoute(customers[i]), j});
 
-        }
-        sort(optimal_routes.begin(), optimal_routes.end());
-        bool addedToRoute = false;
-        for(auto optimal_route : optimal_routes){
-            int insertion_point = optimal_route.first.second;
-            int route_index = optimal_route.second;
-            bool addedToRoute = routes[route_index].addToRoute(customers[i] , insertion_point);
-            if(addedToRoute) break;
-        }
+//         }
+//         sort(optimal_routes.begin(), optimal_routes.end());
+//         bool addedToRoute = false;
+//         for(auto optimal_route : optimal_routes){
+//             int insertion_point = optimal_route.first.second;
+//             int route_index = optimal_route.second;
+//             bool addedToRoute = routes[route_index].addToRoute(customers[i] , insertion_point);
+//             if(addedToRoute) break;
+//         }
 
-        if(addedToRoute == false){
-            Route newRoute({depot,customers[i]}, capacity);
-            routes.push_back(newRoute);
-        }
+//         if(addedToRoute == false){
+//             Route newRoute({depot,customers[i]}, capacity);
+//             routes.push_back(newRoute);
+//         }
 
-    }
+ //   }
 
 //     while(!customers.empty()){
         
@@ -83,7 +85,7 @@ void Solution::__greedy__(vector<Customer> customers,Customer depot){
 //         route = Route();
 //     }
 // }
-}
+//}
 
 void Solution::print(){
     cout << "Printing greedy solution\n";
@@ -111,4 +113,6 @@ void Solution::print(){
         cout << '\n';
     }
     printf("%.2lf\n", length());
+
+
 }
