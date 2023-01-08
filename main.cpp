@@ -4,7 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
-
+#include <queue>
+#include <cstdlib>
 
 #include "Sources/DataLoader.cpp"
 #include "Sources/Customer.cpp"
@@ -44,11 +45,11 @@ bool CompareByReadyTime(Customer a, Customer b){
     return a.getId() < b.getId();
  }
 
- Solution Greedy(vector<Customer> customers, Customer depot, int capacity){
+ Solution Greedy(vector<Customer> customers, Customer depot, int capacity, bool should_sort = true){
     Solution solution = Solution(capacity);
     Route route = Route(capacity);
 
-    sort(customers.begin(), customers.end(), CompareByReadyTime);
+    if(should_sort) sort(customers.begin(), customers.end(), CompareByReadyTime);
 
     int route_demand_size = 0;
 
@@ -68,7 +69,7 @@ bool CompareByReadyTime(Customer a, Customer b){
                 added = true;
                 route_demand_size += customers[i].getDemand();
                 customers.erase(customers.begin() + i);
-                cout<<route_demand_size<<endl;
+                //cout<<route_demand_size<<endl;
                 break;
             }
         }
@@ -87,8 +88,100 @@ bool CompareByReadyTime(Customer a, Customer b){
 
 #pragma endregion
 
+#pragma region Tabu
+
+class TabuSwap{
+    pair<int, int> route_indicies;
+    pair<int, int> customer_indicies;
+    pair<Customer, Customer> tabuSwap;
+
+    bool operator= (TabuSwap other){
+        return (tabuSwap.first.getId() == other.tabuSwap.first.getId() && tabuSwap.second.getId() == other.tabuSwap.second.getId())
+            || (tabuSwap.first.getId() == other.tabuSwap.second.getId() && tabuSwap.second.getId() == other.tabuSwap.first.getId());
+    }
+};
+
+Solution Tabu(Solution current){
+    Solution best = current;
+    queue<TabuSwap> tabu;
+    int iterations = 1e5;
+    int tabu_length = 10;
+
+    vector<TabuSwap> feasible_swaps;
+
+    while(iterations--){
+        feasible_swaps.clear();
+        for(int i = 0; i < current.routes.size(); i++){
+            for(int j = i + 1; j < current.routes.size(); i++){
+
+            }
+        }
+    }
+
+    return best;
+}
+
+#pragma endregion
+
+#pragma region other
+
+Solution TryFix(Solution solution, int count){
+
+    sort(solution.routes.begin(), solution.routes.end(), [](Route a, Route b) { return a.order_with_time.size() < b.order_with_time.size(); });
+    for(int i = 0; i < solution.routes.size(); i++) solution.routes[i].orderFromOWT();
+
+    for(int pivot = 0; pivot < solution.routes.size(); pivot++){
+        Solution temp = Solution(solution.routes, solution.capacity);
+        Route route = temp.routes[pivot];
+        temp.routes.erase(temp.routes.begin() + pivot);
+        route.order.pop_back();
+        route.order.erase(route.order.begin());
+        while(route.order.size()){
+            Customer last = route.order.back();
+            route.order.pop_back();
+            bool inserted = false;
+            for(int i = 0; i < temp.routes.size(); i++){
+                for(int j = 1; j < temp.routes[i].order.size() - 1; j++){
+                    if(temp.routes[i].addToRoute(last, j)){
+                        inserted = true;
+                        break;
+                    }
+                }
+                if(inserted) break;
+            }
+            if(!inserted) break;
+        }
+        if(temp.isFeasible(count) && temp.isBetter(solution)) return temp;
+    }
+    return solution;
+}
+
+#pragma endregion
+
+#pragma region RandomStartGreedy
+
+Solution RandomStartGreedy(vector<Customer> customers, Customer depot, int capacity){
+    Solution ret = Greedy(customers, depot, capacity);
+    for(int i = 0; i < 10000; i++){
+        sort(customers.begin(), customers.end(), CompareByReadyTime);
+        int a = rand() % customers.size();
+        int b = rand() % customers.size();
+        if(a != b){
+            Customer temp = customers[a];
+            customers[a] = customers[b];
+            customers[b] = temp;
+        }
+        Solution generated = Greedy(customers, depot, capacity, false);
+        if(i == 0 || generated.isBetter(ret)) ret = generated;
+    }
+    return ret;
+}
+
+#pragma endregion
+
 int main(int argc, char *argv[]){
 
+    srand(time(nullptr));
     string filename = argv[1];
     DataLoader* dataLoader = new DataLoader(filename);
 
@@ -114,8 +207,8 @@ int main(int argc, char *argv[]){
         total_demand += customer->getDemand();
         customers.push_back(*customer);
     }
-
-    Greedy(customers, depot, capacity).print(filename);
+    RandomStartGreedy(customers, depot, capacity).print(filename);
+    //TryFix(Greedy(customers, depot, capacity), customers.size()).print(filename);
 
     return 0;
 }

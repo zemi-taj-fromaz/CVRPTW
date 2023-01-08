@@ -10,7 +10,6 @@ using namespace std;
 
 class Route {
     private:
-        bool checkConstraints(vector<Customer>);
         int capacity;
     public:
         vector<Customer> order;
@@ -20,6 +19,10 @@ class Route {
         double length();
         pair<double,int> distanceFromRoute(Customer);
         bool addToRoute(Customer,int);
+        void removeRoute(int);
+        bool checkConstraints();
+        void orderFromOWT();
+        void OWTFromOrder();
 };
 
 #endif

@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <fstream>
 #include <filesystem>
-
+#include <set>
 
 using namespace std;
 
@@ -40,7 +40,6 @@ int Solution::size() {
 void Solution::addRoute(Route route){
     routes.push_back(route);
 }
-
 
 void Solution::print(string filename){
     cout << "Printing greedy solution\n";
@@ -79,4 +78,22 @@ void Solution::print(string filename){
     printf("%.2lf\n", length());
     file<<buffer;
     file.close();
+}
+
+bool Solution::isBetter(Solution other){
+    if (routes.size() < other.routes.size()) return true;
+    if (length() < other.length()) return true;
+    return false;
+}
+
+bool Solution::isFeasible(int count){
+    set<int> visited;
+    for(auto route : routes) {
+        route.orderFromOWT();
+        for(auto x : route.order) visited.insert(x.getId());
+        if(!route.checkConstraints()) return false;
+    }
+    for(int i = 0; i <= count; i++) if(visited.find(i) == visited.end()) return false;
+
+    return true;
 }

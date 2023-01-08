@@ -12,9 +12,9 @@ using namespace std;
 
 class Solution {
     private:
+    public:
         int capacity;
         vector<Route> routes;
-    public:
         Solution(int);
         Solution(vector<Route>,int);
         void print(string filename);
@@ -24,6 +24,8 @@ class Solution {
         static bool CompareById(Customer a, Customer b);
         static bool CompareByReadyTime(Customer a, Customer b);
         int size();
+        bool isFeasible(int);
+        bool isBetter(Solution other);
 };
 
 #endif

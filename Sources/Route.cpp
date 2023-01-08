@@ -35,40 +35,51 @@ pair<double,int> Route::distanceFromRoute(Customer customer){
 
 }
 
-bool Route::checkConstraints(vector<Customer> route){
-
+bool Route::checkConstraints(){
     double time = 0;
     double order_size;
-    for(int i = 1; i < route.size(); i++){
-        time += route[i].distance(route[i-1]);
-        if(route[i].getReadyTime() > time) time = route[i].getReadyTime();
-        if(route[i].getDueDate() < time) return false;
-        time += route[i].getServiceTime();
-        order_size += route[i].getDemand();
+    for(int i = 1; i < order.size(); i++){
+        time += order[i].distance(order[i-1]);
+        if(order[i].getReadyTime() > time) time = order[i].getReadyTime();
+        if(order[i].getDueDate() < time) return false;
+        time += order[i].getServiceTime();
+        order_size += order[i].getDemand();
     }
 
     return order_size <= capacity;
-    
 }
 
-bool Route::addToRoute(Customer customer,int insertion_point){
+bool Route::addToRoute(Customer customer, int insertion_point){
     
     if(customer.getDemand() > capacity) return false;
 
-    vector<Customer> route_copy(order);
-    if(insertion_point == order.size()){
-        route_copy.push_back(customer);
-    } else {
-            route_copy.insert(route_copy.begin() + insertion_point,customer);
-    }
+    order.insert(order.begin() + insertion_point, customer);
 
-    if(checkConstraints(route_copy)){
-        order = route_copy;
-        return true;
-    }
+    //for(auto it : order) cout << it.getId() << ' ';
+    //cout << (checkConstraints() ? "ok\n" : "not ok\n");
+
+    if(checkConstraints()) return true;
+
+    order.erase(order.begin() + insertion_point);
     return false;
-
 }
 
+void Route::removeRoute(int index){
+    order.erase(order.begin() + index);
+}
 
+void Route::orderFromOWT(){
+    order.clear();
+    for(auto x : order_with_time) order.push_back(x.first);
+}
 
+void Route::OWTFromOrder(){
+    order_with_time.clear();
+    double time = 0;
+    for(int i = 0; i < order.size(); i++){
+        if(i != 0) time += order_with_time[i].first.distance(order_with_time[i-1].first);
+        if(order_with_time[i].first.getReadyTime() > time) time = order_with_time[i].first.getReadyTime();
+        time += order_with_time[i].first.getServiceTime();
+        order_with_time.push_back({order[i], time});
+    }
+}
