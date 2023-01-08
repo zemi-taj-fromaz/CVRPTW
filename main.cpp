@@ -78,6 +78,10 @@ bool CompareByReadyTime(Customer a, Customer b){
         route = Route(capacity);
         route_demand_size = 0;
     }
+    pair<Customer, int> last = route.order_with_time[route.order_with_time.size() - 1];
+    route.order_with_time.push_back({depot,last.second + last.first.getServiceTime() + (int) ceil(last.first.distance(depot))});
+    solution.addRoute(route);
+        
     return solution;
  }
 
@@ -90,13 +94,11 @@ int main(int argc, char *argv[]){
 
     vector<string> vs(dataLoader->__load__());
 
-
     auto instace_characteristics = split(vs[0],",");
     int vehicle_number = stoi(instace_characteristics[0]);
     int customer_number = vs.size() - 2;
     int capacity = stoi(instace_characteristics[1]);
     printf("Capacity : %d\n",capacity);
-
 
     auto depot_init = split(vs[1],",");
     Customer depot(stoi(depot_init[0]),{stoi(depot_init[1]),stoi(depot_init[2])},stoi(depot_init[3]),stoi(depot_init[4]),stoi(depot_init[5]),stoi(depot_init[6]));
@@ -112,8 +114,6 @@ int main(int argc, char *argv[]){
         total_demand += customer->getDemand();
         customers.push_back(*customer);
     }
-
-    
 
     Greedy(customers, depot, capacity).print(filename);
 

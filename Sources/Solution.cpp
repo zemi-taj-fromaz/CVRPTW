@@ -33,6 +33,10 @@ double Solution::length(){
     return distance;
 }
 
+int Solution::size() {
+    return this->routes.size();
+}
+
 void Solution::addRoute(Route route){
     routes.push_back(route);
 }
@@ -40,10 +44,11 @@ void Solution::addRoute(Route route){
 
 void Solution::print(string filename){
     cout << "Printing greedy solution\n";
-    string outfile = "out/res-un-" + filename;
+    filesystem::path cwd = filesystem::current_path();
+    string outfile = cwd.string() + '\\' + "out\\res-un-" + filename;
+    ofstream file;
+    file.open(outfile);
     printf("%d\n", routes.size());
-    filesystem::path cwd = filesystem::current_path() / outfile;
-    ofstream file(cwd.string());
     string output;
     output = to_string(routes.size()) + "\n";
     file<<output;
@@ -74,6 +79,4 @@ void Solution::print(string filename){
     printf("%.2lf\n", length());
     file<<buffer;
     file.close();
-
-
 }

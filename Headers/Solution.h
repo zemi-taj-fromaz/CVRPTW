@@ -23,7 +23,7 @@ class Solution {
         void __greedy__(vector<Customer>,Customer);
         static bool CompareById(Customer a, Customer b);
         static bool CompareByReadyTime(Customer a, Customer b);
-
+        int size();
 };
 
 #endif

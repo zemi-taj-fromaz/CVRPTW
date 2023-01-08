@@ -12,7 +12,7 @@ Route::Route(vector<Customer> order, int capacity){
 
 double Route::length() {
     double length = 0.0;
-    for(int i = 0; i < order_with_time.size() - 2; i++){
+    for(int i = 0; i < order_with_time.size() - 1; i++){
         length += order_with_time[i].first.distance(order_with_time[i + 1].first);
     }
     return length;
