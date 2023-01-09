@@ -41,10 +41,10 @@ void Solution::addRoute(Route route){
     routes.push_back(route);
 }
 
-void Solution::print(string filename){
+void Solution::print(string filename,string timelimit){
     cout << "Printing greedy solution\n";
     filesystem::path cwd = filesystem::current_path();
-    string outfile = cwd.string() + '\\' + "out\\res-un-" + filename;
+    string outfile = cwd.string() + '\\' + "out\\res-" + timelimit + "-" + filename;
     ofstream file;
     file.open(outfile);
     printf("%d\n", routes.size());

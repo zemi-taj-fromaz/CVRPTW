@@ -17,7 +17,7 @@ class Solution {
         vector<Route> routes;
         Solution(int);
         Solution(vector<Route>,int);
-        void print(string filename);
+        void print(string filename,string);
         double length();
         void addRoute(Route);
         void __greedy__(vector<Customer>,Customer);
