@@ -6,6 +6,7 @@
 #include <cmath>
 #include <queue>
 #include <cstdlib>
+#include <chrono>
 
 #include "Sources/DataLoader.cpp"
 #include "Sources/Customer.cpp"
@@ -15,6 +16,25 @@ using namespace std;
 
 #define iterator vector<int>::iterator
 #define ll long long
+
+#pragma region Timer
+
+chrono::high_resolution_clock::time_point start_time;
+
+double allowed_time;
+
+double get_elapsed_time() {
+  // get current time
+  auto current_time = chrono::high_resolution_clock::now();
+
+  // get duration since start of program
+  auto elapsed_time = current_time - start_time;
+
+  // convert duration to seconds and return as double
+  return chrono::duration<double>(elapsed_time).count();
+}
+
+#pragma endregion
 
 #pragma region Split
 
@@ -88,13 +108,13 @@ bool CompareByReadyTime(Customer a, Customer b){
 
 #pragma endregion
 
-
-
 #pragma region RandomStartGreedy
 
 Solution RandomStartGreedy(vector<Customer> customers, Customer depot, int capacity){
     Solution ret = Greedy(customers, depot, capacity);
-    for(int i = 0; i < 10000; i++){
+    int last_improving = 0;
+    while(true){
+        if(get_elapsed_time() > allowed_time * 60 - 0.5 || ++last_improving > 25000) break;
         sort(customers.begin(), customers.end(), CompareByReadyTime);
         int a = rand() % customers.size();
         int b = rand() % customers.size();
@@ -104,18 +124,26 @@ Solution RandomStartGreedy(vector<Customer> customers, Customer depot, int capac
             customers[b] = temp;
         }
         Solution generated = Greedy(customers, depot, capacity, false);
-        if(generated.isBetter(ret)) ret = generated;
+        if(generated.isBetter(ret)) {
+            ret = generated;
+            last_improving = 0;
+        }
     }
     return ret;
 }
 
 #pragma endregion
 
+
 int main(int argc, char *argv[]){
+
+    start_time = std::chrono::high_resolution_clock::now();
 
     srand(time(nullptr));
     string filename = argv[1];
     string timelimit = argv[2];
+    allowed_time = timelimit != "un" ? stod(timelimit) : 1e6;
+
     DataLoader* dataLoader = new DataLoader(filename);
 
     vector<string> vs(dataLoader->__load__());
@@ -140,6 +168,8 @@ int main(int argc, char *argv[]){
         customers.push_back(*customer);
     }
     RandomStartGreedy(customers, depot, capacity).print(filename,timelimit);
+
+    printf("Finished in %.5lf\n", get_elapsed_time()); 
 
     return 0;
 }
