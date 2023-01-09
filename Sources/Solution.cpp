@@ -81,7 +81,7 @@ void Solution::print(string filename,string timelimit){
 
 bool Solution::isBetter(Solution other){
     if (routes.size() < other.routes.size()) return true;
-    if (length() < other.length()) return true;
+    if (routes.size() == other.routes.size() && length() < other.length()) return true;
     return false;
 }
 

@@ -113,7 +113,9 @@ bool CompareByReadyTime(Customer a, Customer b){
 Solution RandomStartGreedy(vector<Customer> customers, Customer depot, int capacity){
     Solution ret = Greedy(customers, depot, capacity);
     int last_improving = 0;
+    int iterations = 0;
     while(true){
+        iterations++;
         if(get_elapsed_time() > allowed_time * 60 - 0.5 || ++last_improving > 25000) break;
         sort(customers.begin(), customers.end(), CompareByReadyTime);
         int a = rand() % customers.size();
@@ -129,6 +131,7 @@ Solution RandomStartGreedy(vector<Customer> customers, Customer depot, int capac
             last_improving = 0;
         }
     }
+    cout << iterations << endl;
     return ret;
 }
 
